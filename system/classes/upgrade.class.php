@@ -13,8 +13,8 @@ namespace mrpassword;
 
 class upgrade {
 
-	private $db_version 		= '28';
-	private $program_version 	= '4.1';
+	private $db_version 		= '29';
+	private $program_version 	= '4.2';
 
 	function __construct() {
 	
@@ -861,6 +861,91 @@ class upgrade {
 		
 		$config->set('program_version', '4.1');
 		$config->set('database_version', 28);		
+	}
+	
+	private function dbsv_29() {
+		global $db;
+	
+		$config 		= &singleton::get(__NAMESPACE__ . '\config');
+		$encryption		= &singleton::get(__NAMESPACE__ . '\encryption');
+		$tables 		= &singleton::get(__NAMESPACE__ . '\tables');
+		$error 			= &singleton::get(__NAMESPACE__ . '\error');
+		
+		$passwords_query = "SELECT `id`, `password` FROM `$tables->passwords`";
+		$custom_fields_query = "SELECT `id`, `value` FROM `$tables->custom_fields`";
+		
+		try {
+			$passwords_array = $db->query($passwords_query)->fetchAll(database::FETCH_ASSOC);
+			$custom_fields_array = $db->query($custom_fields_query)->fetchAll(database::FETCH_ASSOC);
+		}
+		catch (\Exception $e) {
+			$error->create(array('type' => 'sql_execute_error', 'message' => $e->getMessage()));
+		}		
+
+		foreach($passwords_array as &$password) {
+			$password['password'] = $encryption->decrypt($password['password']);
+		}
+		unset($password);
+		
+		foreach($custom_fields_array as &$custom_field) {
+			$custom_field['value'] = $encryption->decrypt($custom_field['value']);
+		}
+		unset($custom_field);
+		
+		$config->set('encryption_level', 3);
+		$encryption_level = $config->get('encryption_level');
+		$encryption->set('db_level', $encryption_level);
+		
+		foreach($passwords_array as &$password) {
+			$password['password'] = $encryption->encrypt($password['password']);
+			$query = "UPDATE `$tables->passwords` SET `password` = :password, `encryption_level` = :encryption_level WHERE `id` = :id";
+			
+			try {
+				$stmt = $db->prepare($query);
+			}
+			catch (Exception $e) {
+				$error->create(array('type' => 'sql_prepare_error', 'message' => $e->getMessage()));
+			}
+
+			$stmt->bindParam(':password', $password['password'], database::PARAM_STR);
+			$stmt->bindParam(':encryption_level', $encryption_level, database::PARAM_INT);
+			$stmt->bindParam(':id', $password['id'], database::PARAM_INT);
+			
+			try {
+				$stmt->execute();
+			}
+			catch (\Exception $e) {
+				$error->create(array('type' => 'sql_execute_error', 'message' => $e->getMessage()));
+			}
+		}
+		unset($password);
+			
+		foreach($custom_fields_array as &$custom_field) {
+			$custom_field['value'] = $encryption->encrypt($custom_field['value']);
+			$query = "UPDATE `$tables->custom_fields` SET `value` = :value, `encryption_level` = :encryption_level WHERE `id` = :id";
+			
+			try {
+				$stmt = $db->prepare($query);
+			}
+			catch (Exception $e) {
+				$error->create(array('type' => 'sql_prepare_error', 'message' => $e->getMessage()));
+			}
+			
+			$stmt->bindParam(':value', $custom_field['value'], database::PARAM_STR);
+			$stmt->bindParam(':encryption_level', $encryption_level, database::PARAM_INT);
+			$stmt->bindParam(':id', $custom_field['id'], database::PARAM_INT);
+			
+			try {
+				$stmt->execute();
+			}
+			catch (\Exception $e) {
+				$error->create(array('type' => 'sql_execute_error', 'message' => $e->getMessage()));
+			}
+		}
+		unset($custom_field);
+				
+		$config->set('program_version', '4.2');
+		$config->set('database_version', 29);
 	}
 	
 }

@@ -61,8 +61,27 @@ class encryption {
 	public function encrypt($string) {
 	
 		switch ($this->config['db_level']) {
+			case 3:
+				$iv = 
+					openssl_random_pseudo_bytes(
+						openssl_cipher_iv_length(
+							'AES-128-CBC'
+						)
+					);
+					
+				$encrypted_data = 
+					openssl_encrypt(
+						$string, 
+						'AES-128-CBC', 
+						md5($this->config['db_key'] . $this->config['file_key']), 
+						OPENSSL_RAW_DATA, 
+						$iv
+					);
+					
+				$encrypted = base64_encode($iv . $encrypted_data);
+
+			break;
 			case 2:		
-				//new style
 				$iv = mcrypt_create_iv(
 						mcrypt_get_iv_size(
 							MCRYPT_RIJNDAEL_256, 
@@ -104,6 +123,24 @@ class encryption {
 	public function decrypt($string) {
 		
 		switch ($this->config['db_level']) {
+			case 3:
+			    $string = base64_decode($string);
+				
+				$iv_size = openssl_cipher_iv_length('AES-128-CBC');
+				$iv = substr($string, 0, $iv_size);
+
+				$string = substr($string, $iv_size);
+				
+				$decrypted = 
+					openssl_decrypt(
+						$string, 
+						'AES-128-CBC', 
+						md5($this->config['db_key'] . $this->config['file_key']), 
+						OPENSSL_RAW_DATA, 
+						$iv
+					);
+
+			break;
 			case 2:	
 				$string = base64_decode($string);
 			

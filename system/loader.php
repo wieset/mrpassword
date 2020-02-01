@@ -105,7 +105,7 @@ catch (\Exception $e) {
 $encryption			= &singleton::get(__NAMESPACE__ . '\encryption');
 if (isset($config['encryption_key']) && (!empty($config['encryption_key']))) {
 	$encryption->set('file_key', $config['encryption_key']);
-	$encryption->set('file_level', 2);
+	$encryption->set('file_level', 3);
 }
 
 //unset database details
