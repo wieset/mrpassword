@@ -106,7 +106,7 @@ class passwords {
 		}
 		if (isset($array['url'])) {
 			$url = $array['url'];
-			$stmt->bindParam(':url', $url, database::PARAM_INT);
+			$stmt->bindParam(':url', $url, database::PARAM_STR);
 		}		
 		
 		$encryption_level = $config->get('encryption_level');
@@ -357,7 +357,7 @@ class passwords {
 		
 		$stmt->bindParam(':id', $array['id'], database::PARAM_INT);
 		$stmt->bindParam(':site_id', $site_id, database::PARAM_INT);
-		$stmt->bindParam(':last_modified', $last_modified, database::PARAM_INT);
+		$stmt->bindParam(':last_modified', $last_modified, database::PARAM_STR);
 
 		if (isset($array['name'])) {
 			$stmt->bindParam(':name', $array['name'], database::PARAM_STR);
@@ -379,7 +379,7 @@ class passwords {
 			$stmt->bindParam(':parent_id', $array['parent_id'], database::PARAM_INT);
 		}
 		if (isset($array['url'])) {
-			$stmt->bindParam(':url', $array['url'], database::PARAM_INT);
+			$stmt->bindParam(':url', $array['url'], database::PARAM_STR);
 		}		
 		if (isset($array['encryption_level'])) {
 			$stmt->bindParam(':encryption_level', $array['encryption_level'], database::PARAM_INT);
