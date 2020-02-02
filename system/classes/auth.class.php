@@ -185,7 +185,7 @@ class auth {
 
 		$site_id						= SITE_ID;
 		
-		$username 						= strtolower($array['username']);
+		$username 						= trim(strtolower($array['username']));
 		$password						= $array['password'];
 		
 		if (empty($username)) return false;
