@@ -141,16 +141,15 @@ $(document).ready(function () {
 			passwd += symbol;
 
 			var length = 3;
-			var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			var chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
 		}
 		else if (type == 2) {
-			var length = 32;
-			var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			var length = 12;
+			var chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
 		}
 		else {
-			var length = 32;
-			var chars = '~!@#$%^&*()_+=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
+			var length = 20;
+			var chars = '~!@#$%^&*()_+=abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
 		}
 
 		for (i=1;i<=length;i++) {
