@@ -181,9 +181,6 @@ include(core\ROOT . '/user/themes/'. CURRENT_THEME .'/includes/html_header.php')
 				
 				<div class="btn-group" data-toggle="buttons">
 					<label class="btn btn-primary btn-sm">
-						<input type="radio" name="password_type" id="option1" value="1"> <?php echo $language->get('Easy'); ?>
-					</label>
-					<label class="btn btn-primary btn-sm">
 						<input type="radio" name="password_type" id="option2" value="2"> <?php echo $language->get('Simple'); ?>
 					</label>
 					<label class="btn btn-primary btn-sm default-toggle">
