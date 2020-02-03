@@ -28,6 +28,21 @@ else {
 	exit;
 }
 
+if (isset($_POST['delete'])) {
+	$del_passwords_array = $passwords->get(array('parent_id' => $id));
+
+	foreach($del_passwords_array as $del) {
+	        $custom_fields->delete(array('password_id' => $del['id']));
+	}
+	
+	$custom_fields->delete(array('password_id' => $id));
+	$passwords->delete(array('id' => $id));
+	$passwords->delete(array('parent_id' => $id));
+	
+	header('Location: ' . $config->get('address') . '/passwords/global/');
+	exit;
+}
+
 if (isset($_POST['save'])) {
 	if (!empty($_POST['name'])) {
 		if (!empty($_POST['password'])) {
@@ -84,6 +99,14 @@ include(core\ROOT . '/user/themes/'. CURRENT_THEME .'/includes/html_header.php')
 	$(document).ready(function () {
 		$('.nav-tabs').button();
 		$('.default-toggle').button('toggle');
+		$('#delete').click(function () {
+			if (confirm("<?php echo $language->get('Are you sure you wish to delete this password and its history?'); ?>")) {
+				return true;
+			}
+			else{
+				return false;
+			}
+		});
 	});
 </script>
 <div class="row">
@@ -102,9 +125,14 @@ include(core\ROOT . '/user/themes/'. CURRENT_THEME .'/includes/html_header.php')
 				</div>
 				
 				<div class="clearfix"></div>
-				
+
 				<br />
-				
+
+				<div class="pull-right">
+					<p class="seperator"><button type="submit" id="delete" name="delete" class="btn btn-danger"><?php echo $language->get('Delete'); ?></button></p>
+				</div>
+
+				<div class="clearfix"></div>
 			</div>
 			<div class="well well-sm">
 				<h4><?php echo $language->get('Generate Settings'); ?></h4>
