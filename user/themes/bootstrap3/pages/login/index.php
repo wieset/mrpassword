@@ -45,11 +45,6 @@ include(ROOT . '/user/themes/'. CURRENT_THEME .'/includes/html_header.php');
 							
 				</div>
 				<div class="clearfix"></div>
-
-				<br />
-				<div class="clearfix"></div>
-
-				<p><a href="<?php echo safe_output($config->get('address')) . '/forgot/'; ?>" class="btn btn-default"><?php echo safe_output($language->get('Forgot Password')); ?></a></p>
 				<?php if ($config->get('registration_enabled')) { ?>
 					<p><a href="<?php echo safe_output($config->get('address')) . '/register/'; ?>" class="btn btn-default"><?php echo safe_output($language->get('Create Account')); ?></a></p>
 				<?php } ?>	
