@@ -18,7 +18,7 @@ if ($id == 0) {
 	exit;
 }
 
-$share_array = $shares->get(array('user_id' => $auth->get('id'), 'id' => $id));
+$share_array = $shares->get(array('id' => $id));
 
 if (count($share_array) == 1) {
 	$share = $share_array[0];
@@ -30,7 +30,7 @@ else {
 
 $category_id = (int) $share['category_id'];
 
-$shares->delete(array('id' => $id, 'user_id' => $auth->get('id')));
+$shares->delete(array('id' => $id));
 header('Location: ' . $config->get('address') . '/settings/view_global_category/' . $category_id . '/');
 exit;
 ?>
